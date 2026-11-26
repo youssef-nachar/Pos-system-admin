@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com/recaptcha/ https://www.recaptcha.net; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://www.google.com; frame-src https://www.google.com/recaptcha/ https://recaptcha.google.com https://*.firebaseapp.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>ShopPOS Admin</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --ink: #0f172a;
+      --mut: #64748b;
+      --pri: #2563eb;
+      --dk: #14213d;
+      --grn: #16a34a;
+      --red: #dc2626;
+      --line: #e2e8f0
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 14px/1.5 system-ui, Segoe UI, Arial, sans-serif
+    }
+
+    button,
+    input,
+    select {
+      font: inherit
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 9px;
+      padding: 7px 11px;
+      font-weight: 600
+    }
+
+    button:disabled {
+      opacity: .5
+    }
+
+    input,
+    select {
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      width: 100%
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    .mut {
+      color: var(--mut)
+    }
+
+    .pri {
+      background: var(--pri);
+      color: #fff
+    }
+
+    .grn {
+      background: #dcfce7;
+      color: #166534
+    }
+
+    .red {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    .lt {
+      background: #eef2f7;
+      color: var(--dk)
+    }
+
+    .box {
+      max-width: 360px;
+      margin: 12vh auto;
+      background: #fff;
+      padding: 26px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px #0001
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--mut);
+      margin: 12px 0 5px
+    }
+
+    .full {
+      width: 100%;
+      margin-top: 14px;
+      padding: 11px
+    }
+
+    .err {
+      color: var(--red);
+      font-size: 13px;
+      margin-top: 8px
+    }
+
+    .bar {
+      background: var(--dk);
+      color: #fff;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .bar .lt {
+      background: #ffffff22;
+      color: #fff
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px
+    }
+
+    .stat,
+    .panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 15px
+    }
+
+    .stat small {
+      color: var(--mut)
+    }
+
+    .stat b {
+      display: block;
+      font-size: 22px;
+      margin-top: 4px
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 12px
+    }
+
+    @media(max-width:800px) {
+      .tools {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    .tw {
+      overflow: auto
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px
+    }
+
+    th,
+    td {
+      padding: 10px;
+      text-align: start;
+      border-bottom: 1px solid #eef2f7;
+      font-size: 13px;
+      vertical-align: middle
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--mut);
+      background: #f8fafc
+    }
+
+    .b {
+      display: inline-block;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700
+    }
+
+    .b.active {
+      background: #dcfce7;
+      color: #166534
+    }
+
+    .b.trial {
+      background: #dbeafe;
+      color: #1e40af
+    }
+
+    .b.expired {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    .b.suspended {
+      background: #e5e7eb;
+      color: #374151
+    }
+
+    .acts {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      left: 18px;
+      background: #0f172a;
+      color: #fff;
+      padding: 11px 15px;
+      border-radius: 10px;
+      display: none
+    }
+  </style>
+</head>
+
+<body>
+  <section id="login">
+    <form id="lf" class="box">
+      <h2 style="margin:0">🛠 ShopPOS Admin</h2>
+      <p class="mut">Restricted area.</p>
+      <label>Email</label><input id="em" type="email" required autocomplete="username"><label>Password</label><input
+        id="pw" type="password" required autocomplete="current-password">
+      <button class="pri full" id="lb">Sign in</button>
+      <div class="err" id="msg"></div>
+    </form>
+  </section>
+  <div id="app" class="hidden">
+    <header class="bar"><b>🛠 ShopPOS Admin</b><span><span id="who" style="font-size:12px"></span> <button class="lt"
+          id="out">Sign out</button></span></header>
+    <div class="page">
+      <div class="stats" id="stats"></div>
+      <div class="panel">
+        <div class="tools">
+          <div><label class="mut" style="margin-top:0">Search</label><input id="q"
+              placeholder="Shop name, email or phone"></div>
+          <div><label class="mut" style="margin-top:0">Status</label><select id="fs">
+              <option value="all">All</option>
+              <option value="active">Active</option>
+              <option value="trial">Trial</option>
+              <option value="expired">Expired</option>
+              <option value="suspended">Suspended</option>
+            </select></div>
+          <div><label class="mut" style="margin-top:0">Monthly price</label><input id="pm" type="number" min="0"
+              step="any"></div>
+          <div><label class="mut" style="margin-top:0">Yearly price</label><input id="py" type="number" min="0"
+              step="any"></div>
+          <button class="lt" id="csv">Export CSV</button>
+        </div>
+        <div class="tw">
+          <table>
+            <thead>
+              <tr>
+                <th>Shop</th>
+                <th>Joined</th>
+                <th>Last seen</th>
+                <th>Status</th>
+                <th>Plan</th>
+                <th>Paid until</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toast" class="toast"></div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app-check.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    const cfg = { apiKey: "AIzaSyAzA0XPVzn7dZYYKbqjoWD4XoH2MEHxq_s", authDomain: "pos-system-b20e2.firebaseapp.com", databaseURL: "https://pos-system-b20e2-default-rtdb.firebaseio.com", projectId: "pos-system-b20e2", appId: "1:709615712934:web:2a06fe3e6aa1630fe69267" };
+    const APPCHECK_SITE_KEY = ""; /* same reCAPTCHA v3 site key as the app, if you enabled App Check */
+    if (location.hostname === "localhost") self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+    const app = initializeApp(cfg); if (APPCHECK_SITE_KEY) initializeAppCheck(app, { provider: new ReCaptchaV3Provider(APPCHECK_SITE_KEY), isTokenAutoRefreshEnabled: true });
+    const db = getDatabase(app), auth = getAuth(app), $ = i => document.getElementById(i), D = 864e5;
+    const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    let shops = [], off = null;
+    const toast = (t, bad) => { const x = $("toast"); x.textContent = t; x.style.background = bad ? "#b91c1c" : "#0f172a"; x.style.display = "block"; clearTimeout(toast.t); toast.t = setTimeout(() => x.style.display = "none", 3200) };
+    const fmt = v => Number(v) ? new Date(Number(v)).toLocaleDateString() : "—";
+    function status(s) { const n = Date.now(); if (s.suspended === true) return { k: "suspended", t: "Suspended" }; if (Number(s.paidUntil) > n) return { k: "active", t: "Active" }; const te = Number(s.created) + 14 * D; if (te > n) return { k: "trial", t: "Trial · " + Math.ceil((te - n) / D) + "d" }; return { k: "expired", t: "Expired" } }
+    $("pm").value = localStorage.getItem("pm") || "15"; $("py").value = localStorage.getItem("py") || "150";
+    $("lf").onsubmit = async e => { e.preventDefault(); $("msg").textContent = ""; $("lb").disabled = true; try { await signInWithEmailAndPassword(auth, $("em").value.trim(), $("pw").value) } catch (x) { $("msg").textContent = "Incorrect email or password." } finally { $("lb").disabled = false } };
+    $("out").onclick = () => signOut(auth);
+    onAuthStateChanged(auth, async u => {
+      if (off) { off(); off = null } $("login").classList.toggle("hidden", !!u); $("app").classList.add("hidden"); if (!u) return;
+      const ok = u.uid === "KFHcitZRtJRpBrOZkPcj4Dq8afu2";
+      if (!ok) { await signOut(auth); $("msg").textContent = "This account is not an administrator."; return }
+      $("who").textContent = u.email; $("app").classList.remove("hidden");
+      off = onValue(ref(db, "shopIndex"), s => { const v = s.val() || {}; shops = Object.entries(v).map(([id, o]) => ({ id, ...o })); draw() }, x => toast(x.message, true))
+    });
+    function draw() {
+      const q = $("q").value.trim().toLowerCase(), f = $("fs").value, pm = Number($("pm").value) || 0, py = Number($("py").value) || 0; localStorage.setItem("pm", pm); localStorage.setItem("py", py);
+      const L = shops.map(s => ({ s, st: status(s) })), c = k => L.filter(x => x.st.k === k).length;
+      const mrr = L.filter(x => x.st.k === "active").reduce((t, x) => t + (x.s.plan === "yearly" ? py / 12 : x.s.plan === "gift" ? 0 : pm), 0);
+      $("stats").innerHTML = [["Shops", shops.length], ["Active (paying)", c("active")], ["On trial", c("trial")], ["Expired", c("expired")], ["Est. monthly revenue", mrr.toFixed(2)]].map(([a, b]) => `<div class="stat"><small>${a}</small><b>${b}</b></div>`).join("");
+      $("rows").innerHTML = L.filter(x => (f === "all" || x.st.k === f) && (!q || [x.s.name, x.s.email, x.s.phone].join(" ").toLowerCase().includes(q))).sort((a, b) => (Number(b.s.created) || 0) - (Number(a.s.created) || 0)).map(({ s, st }) => `<tr><td><b>${esc(s.name || "(no name)")}</b><div class="mut">${esc(s.email || "")}${s.phone ? " · " + esc(s.phone) : ""}</div></td><td>${fmt(s.created)}</td><td>${fmt(s.lastSeen)}</td><td><span class="b ${st.k}">${esc(st.t)}</span></td>
+   <td><select data-plan="${esc(s.id)}" style="width:auto"><option value="">—</option>${["monthly", "yearly", "gift"].map(p => `<option ${s.plan === p ? "selected" : ""}>${p}</option>`).join("")}</select></td><td>${fmt(s.paidUntil)}</td>
+   <td><div class="acts"><button class="grn" data-x="1" data-id="${esc(s.id)}">+1 mo</button><button class="grn" data-x="3" data-id="${esc(s.id)}">+3 mo</button><button class="grn" data-x="12" data-id="${esc(s.id)}">+12 mo</button><button class="${s.suspended === true ? "lt" : "red"}" data-sus="${esc(s.id)}">${s.suspended === true ? "Unsuspend" : "Suspend"}</button>${s.phone ? `<button class="lt" data-wa="${esc(s.id)}">💬</button>` : ""}</div></td></tr>`).join("") || '<tr><td colspan="7" class="mut">No shops.</td></tr>'
+    }
+    ["q", "fs", "pm", "py"].forEach(i => $(i).addEventListener(i === "q" || i === "pm" || i === "py" ? "input" : "change", draw));
+    const go = async u => { try { await update(ref(db), u); toast("Saved.") } catch (x) { toast(x.message, true) } };
+    $("rows").addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return; const id = b.dataset.id || b.dataset.sus || b.dataset.wa, s = shops.find(x => x.id === id); if (!s) return;
+      if (b.dataset.x) { const d = new Date(Math.max(Number(s.paidUntil) || 0, Date.now())); d.setMonth(d.getMonth() + Number(b.dataset.x)); const t = +d, u = { [`shops/${id}/billing/paidUntil`]: t, [`shopIndex/${id}/paidUntil`]: t }; if (!s.plan) { u[`shops/${id}/billing/plan`] = "monthly"; u[`shopIndex/${id}/plan`] = "monthly" } go(u) }
+      else if (b.dataset.sus) { const v = s.suspended !== true; if (v && !confirm("Suspend " + (s.name || "this shop") + "? It becomes read-only.")) return; go({ [`shops/${id}/billing/suspended`]: v, [`shopIndex/${id}/suspended`]: v }) }
+      else if (b.dataset.wa) { const ph = String(s.phone).replace(/\D/g, "").replace(/^00/, ""), end = Number(s.paidUntil) || Number(s.created) + 14 * D, msg = `مرحباً، اشتراك محل ${s.name} في ShopPOS ${end > Date.now() ? "ينتهي" : "انتهى"} بتاريخ ${fmt(end)}. للتجديد تواصل معنا.`; window.open("https://wa.me/" + ph + "?text=" + encodeURIComponent(msg), "_blank", "noopener") }
+    });
+    $("rows").addEventListener("change", e => { const id = e.target.dataset.plan; if (id === undefined) return; const v = e.target.value; if (v) go({ [`shops/${id}/billing/plan`]: v, [`shopIndex/${id}/plan`]: v }) });
+    $("csv").onclick = () => { const r = [["Shop", "Email", "Phone", "Joined", "Last seen", "Status", "Plan", "Paid until"], ...shops.map(s => [s.name, s.email, s.phone, fmt(s.created), fmt(s.lastSeen), status(s).t, s.plan || "", fmt(s.paidUntil)])], c = r.map(a => a.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\r\n"), a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["\uFEFF" + c], { type: "text/csv" })); a.download = "shops.csv"; a.click() };
+  </script>
+</body>
+
+</html>
