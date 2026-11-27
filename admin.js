@@ -1,4 +1,4 @@
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app-check.js";
     import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { initializeAuth, browserSessionPersistence, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -22,7 +22,7 @@
     $("out").onclick = () => signOut(auth);
     onAuthStateChanged(auth, async u => {
       if (off) { off(); off = null } $("login").classList.toggle("hidden", !!u); $("app").classList.add("hidden"); if (!u) return;
-      const ok = u.uid === "KFHcitZRtJRpBrOZkPcj4Dq8afu2";
+      let ok = false; try { ok = (await u.getIdTokenResult(true)).claims.admin === true } catch (_) { }
       if (!ok) { await signOut(auth); $("msg").textContent = "This account is not an administrator."; return }
       $("who").textContent = u.email; $("app").classList.remove("hidden");
       off = onValue(ref(db, "shopIndex"), s => { const v = s.val() || {}; shops = Object.entries(v).map(([id, o]) => ({ id, ...o })); draw() }, x => toast(x.message, true))
