@@ -6,54 +6,297 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com/recaptcha/ https://www.recaptcha.net; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://www.google.com; frame-src https://www.google.com/recaptcha/ https://recaptcha.google.com https://www.recaptcha.net; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+    content="default-src 'self'; script-src 'self' https://www.gstatic.com/firebasejs/10.8.0/ https://www.gstatic.com/recaptcha/ https://www.google.com/recaptcha/ https://www.recaptcha.net; connect-src 'self' https://www.gstatic.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://firebaseappcheck.googleapis.com https://firebaseinstallations.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://www.google.com; frame-src https://www.google.com/recaptcha/ https://recaptcha.google.com https://www.recaptcha.net; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="no-referrer">
   <link rel="icon" href="icon-192.png">
   <title>ShopPOS Admin</title>
   <style>
-    :root { --bg: #f1f5f9; --ink: #0f172a; --mut: #64748b; --pri: #2563eb; --dk: #14213d; --grn: #16a34a; --red: #dc2626; --line: #e2e8f0 }
-    * { box-sizing: border-box }
-    body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, Segoe UI, Arial, sans-serif }
-    button, input, select, textarea { font: inherit }
-    button { cursor: pointer; border: 0; border-radius: 9px; padding: 7px 11px; font-weight: 600 }
-    button:disabled { opacity: .5 }
-    input, select, textarea { padding: 9px 11px; border: 1px solid var(--line); border-radius: 9px; background: #fff; width: 100% }
-    .hidden { display: none !important }
-    .mut { color: var(--mut) }
-    .pri { background: var(--pri); color: #fff }
-    .grn { background: #dcfce7; color: #166534 }
-    .red { background: #fee2e2; color: #991b1b }
-    .lt { background: #eef2f7; color: var(--dk) }
-    .box { max-width: 360px; margin: 12vh auto; background: #fff; padding: 26px; border-radius: 16px; box-shadow: 0 10px 30px #0001 }
-    label { display: block; font-size: 12px; font-weight: 600; color: var(--mut); margin: 12px 0 5px }
-    .full { width: 100%; margin-top: 14px; padding: 11px }
-    .err { color: var(--red); font-size: 13px; margin-top: 8px }
-    .bar { background: var(--dk); color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap }
-    .bar .lt { background: #ffffff22; color: #fff }
-    .page { max-width: 1280px; margin: 0 auto; padding: 20px }
-    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px }
-    .stat, .panel { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 15px }
-    .stat small { color: var(--mut) }
-    .stat b { display: block; font-size: 22px; margin-top: 4px }
-    .tools { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 10px; align-items: end; margin-bottom: 12px }
-    @media(max-width:800px) { .tools { grid-template-columns: 1fr 1fr } }
-    .tw { overflow: auto }
-    table { width: 100%; border-collapse: collapse; min-width: 900px }
-    th, td { padding: 10px; text-align: start; border-bottom: 1px solid #eef2f7; font-size: 13px; vertical-align: middle }
-    th { font-size: 11px; text-transform: uppercase; color: var(--mut); background: #f8fafc }
-    .b { display: inline-block; border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700 }
-    .b.active { background: #dcfce7; color: #166534 }
-    .b.trial { background: #dbeafe; color: #1e40af }
-    .b.expired { background: #fee2e2; color: #991b1b }
-    .b.suspended { background: #e5e7eb; color: #374151 }
-    .b.cust { background: #fef3c7; color: #92400e; margin-inline-start: 4px }
-    .acts { display: flex; gap: 5px; flex-wrap: wrap }
-    .toast { position: fixed; bottom: 18px; left: 18px; background: #0f172a; color: #fff; padding: 11px 15px; border-radius: 10px; display: none }
-    .ov { position: fixed; inset: 0; background: #0f172a99; display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 10 }
-    .md { background: #fff; border-radius: 16px; padding: 22px; width: 100%; max-width: 440px; max-height: 90vh; overflow: auto }
-    .md h3 { margin: 0 0 4px }
-    .ck { display: flex; align-items: center; gap: 9px; padding: 7px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; font-weight: 500; color: var(--ink); margin: 0 }
-    .ck input { width: auto }
+    :root {
+      --bg: #f1f5f9;
+      --ink: #0f172a;
+      --mut: #64748b;
+      --pri: #2563eb;
+      --dk: #14213d;
+      --grn: #16a34a;
+      --red: #dc2626;
+      --line: #e2e8f0
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 14px/1.5 system-ui, Segoe UI, Arial, sans-serif
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 9px;
+      padding: 7px 11px;
+      font-weight: 600
+    }
+
+    button:disabled {
+      opacity: .5
+    }
+
+    input,
+    select,
+    textarea {
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      width: 100%
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    .mut {
+      color: var(--mut)
+    }
+
+    .pri {
+      background: var(--pri);
+      color: #fff
+    }
+
+    .grn {
+      background: #dcfce7;
+      color: #166534
+    }
+
+    .red {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    .lt {
+      background: #eef2f7;
+      color: var(--dk)
+    }
+
+    .box {
+      max-width: 360px;
+      margin: 12vh auto;
+      background: #fff;
+      padding: 26px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px #0001
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--mut);
+      margin: 12px 0 5px
+    }
+
+    .full {
+      width: 100%;
+      margin-top: 14px;
+      padding: 11px
+    }
+
+    .err {
+      color: var(--red);
+      font-size: 13px;
+      margin-top: 8px
+    }
+
+    .bar {
+      background: var(--dk);
+      color: #fff;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .bar .lt {
+      background: #ffffff22;
+      color: #fff
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px
+    }
+
+    .stat,
+    .panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 15px
+    }
+
+    .stat small {
+      color: var(--mut)
+    }
+
+    .stat b {
+      display: block;
+      font-size: 22px;
+      margin-top: 4px
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 12px
+    }
+
+    @media(max-width:800px) {
+      .tools {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    .tw {
+      overflow: auto
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px
+    }
+
+    th,
+    td {
+      padding: 10px;
+      text-align: start;
+      border-bottom: 1px solid #eef2f7;
+      font-size: 13px;
+      vertical-align: middle
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--mut);
+      background: #f8fafc
+    }
+
+    .b {
+      display: inline-block;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700
+    }
+
+    .b.active {
+      background: #dcfce7;
+      color: #166534
+    }
+
+    .b.trial {
+      background: #dbeafe;
+      color: #1e40af
+    }
+
+    .b.expired {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    .b.suspended {
+      background: #e5e7eb;
+      color: #374151
+    }
+
+    .b.cust {
+      background: #fef3c7;
+      color: #92400e;
+      margin-inline-start: 4px
+    }
+
+    .acts {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      left: 18px;
+      background: #0f172a;
+      color: #fff;
+      padding: 11px 15px;
+      border-radius: 10px;
+      display: none
+    }
+
+    .ov {
+      position: fixed;
+      inset: 0;
+      background: #0f172a99;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 10
+    }
+
+    .md {
+      background: #fff;
+      border-radius: 16px;
+      padding: 22px;
+      width: 100%;
+      max-width: 440px;
+      max-height: 90vh;
+      overflow: auto
+    }
+
+    .md h3 {
+      margin: 0 0 4px
+    }
+
+    .ck {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      margin: 0
+    }
+
+    .ck input {
+      width: auto
+    }
   </style>
 </head>
 
@@ -109,7 +352,9 @@
       </div>
     </div>
   </div>
-  <div id="modal" class="ov hidden"><div class="md" id="mbody"></div></div>
+  <div id="modal" class="ov hidden">
+    <div class="md" id="mbody"></div>
+  </div>
   <div id="toast" class="toast"></div>
   <script type="module" src="admin.js"></script>
 </body>
