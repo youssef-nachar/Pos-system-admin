@@ -4,7 +4,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
     import { initializeAuth, browserSessionPersistence, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     if (window.top !== window.self) { document.documentElement.textContent = ""; throw new Error("Framing is not allowed"); }
     const cfg = { apiKey: "AIzaSyAzA0XPVzn7dZYYKbqjoWD4XoH2MEHxq_s", authDomain: "pos-system-b20e2.firebaseapp.com", databaseURL: "https://pos-system-b20e2-default-rtdb.firebaseio.com", projectId: "pos-system-b20e2", appId: "1:709615712934:web:2a06fe3e6aa1630fe69267" };
-    const APPCHECK_SITE_KEY = "6LcZ7TQuAAAAAKLQmzGiMNkljeZzAibvoBk5wD6I"; /* same reCAPTCHA v3 site key as the app, if you enabled App Check */
+    const APPCHECK_SITE_KEY = "6Lc90DQuAAAAAKFzK_VIaIxK3TJ2dSEh6zr-iA38"; /* same reCAPTCHA v3 site key as the app, if you enabled App Check */
     if (location.hostname === "localhost") self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
     const app = initializeApp(cfg); if (APPCHECK_SITE_KEY) initializeAppCheck(app, { provider: new ReCaptchaV3Provider(APPCHECK_SITE_KEY), isTokenAutoRefreshEnabled: true });
     const db = getDatabase(app), auth = initializeAuth(app, { persistence: browserSessionPersistence }), $ = i => document.getElementById(i), D = 864e5;
@@ -22,7 +22,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
     $("out").onclick = () => signOut(auth);
     onAuthStateChanged(auth, async u => {
       if (off) { off(); off = null } $("login").classList.toggle("hidden", !!u); $("app").classList.add("hidden"); if (!u) return;
-      let ok = false; try { ok = u.uid === "KFHcitZRtJRpBrOZkPcj4Dq8afu2" || (await u.getIdTokenResult(true)).claims.admin === true } catch (_) { }
+      let ok = false; try { ok = (await u.getIdTokenResult(true)).claims.admin === true } catch (_) { }
       if (!ok) { await signOut(auth); $("msg").textContent = "This account is not an administrator."; return }
       $("who").textContent = u.email; $("app").classList.remove("hidden");
       off = onValue(ref(db, "shopIndex"), s => { const v = s.val() || {}; shops = Object.entries(v).map(([id, o]) => ({ id, ...o })); draw() }, x => toast(x.message, true))
